@@ -1,0 +1,44 @@
+## The goal is to find out what a successful curve ball looks like. 
+
+
+
+```{r}
+library(readxl)
+pitch <- read_excel("C:/Users/logan/OneDrive/pitch.xlsx")
+head(pitch)
+```
+## Lets see what happens when a pitcher throws with 3200 spin rate
+```{r}
+library(tidyverse)
+pitch %>%
+  filter(spin_rate >= 3200) %>%
+  ggplot(aes(x = action_result, y = spin_rate)) +
+  geom_line(aes(color = playerid))
+```
+
+```{r}
+pitch %>%
+  filter(spin_rate >= 3200, action_result == "S") %>%
+  ggplot(aes(x = spin_rate, y = action_result)) +
+  geom_point()
+```
+
+```{r}
+pitch %>% 
+  arrange(desc(playerid), spin_rate) %>% 
+  slice(11)
+
+pitch %>% 
+  arrange(desc(playerid), spin_rate) %>% 
+  slice(1:5)
+```
+
+```{r}
+pitch %>%
+  select(playerid, spin_rate, action_result) %>%
+    group_by(playerid, action_result) %>%
+    summarise(mean_spin = mean(spin_rate), sd_spin = sd(spin_rate)) %>%
+  ggplot(aes(x = mean_spin)) + geom_histogram()
+```
+
+## To me what makes a successful curve ball is not always the highest spin rate. To me it seems that a ball in between 3000 and 3100 is the sweet spot for throwing a succesful curve. This allows the ball to hit the batters box accurately.
